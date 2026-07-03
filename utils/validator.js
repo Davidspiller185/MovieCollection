@@ -9,4 +9,7 @@ export function validYear(year){
 export function validRating(rating){
     return !isNaN(rating) && rating >=0 && rating <=10
 }
+export function validId(id){
+    return typeof id === "number" && id > 0
+}
 
