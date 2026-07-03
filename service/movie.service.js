@@ -1,4 +1,4 @@
-import { appendFileMovies, readFileMovies, writeFileMovies } from "./file.service.js";
+import { readFileMovies, writeFileMovies } from "./file.service.js";
 
 export  async function showAllMoviesTitle() {
     try{
@@ -51,6 +51,9 @@ export async function DeleteMovie(id) {
         try{
             const data = await readFileMovies()
             const Filter = data.filter(movi => movi.id !== id)
+            if (data.length === Filter.length){
+                return "id not found"
+            }
             await writeFileMovies(Filter)
             return "movie deleted"
         }
@@ -62,9 +65,12 @@ export async function DeleteMovie(id) {
 export async function UpdateRate(id,newRate) {
     try{
         const data = await readFileMovies()
-        const Map = data.map(movi => {if (movi.id === id); movi.rating = newRate})
-        await writeFileMovies(Map)
+        const Map = data.map(movi => {if (movi.id === id) movi.rating = newRate; return movi})
+        if (Map){
+            await writeFileMovies(Map)
         return "succsses updateRate"
+        }
+        return "id not found"
     }
     catch(err){
         return err.message
@@ -75,7 +81,10 @@ export async function SearchByName(str) {
     try{
         const data = await readFileMovies()
         const Filter = data.filter(movi => movi.title.toLowerCase().includes(str.toLowerCase()))
-        return Filter
+        if (Filter){
+            return Filter
+        }
+        return "not found name in the name movies"
 
     }
     catch(err){
@@ -87,19 +96,22 @@ export async function SortByGenres(genre) {
     try{
         const data = await readFileMovies()
         const Filter = data.filter(movi =>movi.genre === genre)
-        return Filter
+        if (Filter){
+            return Filter
+        }
+        return "genre not found"
     }
     catch(err){
         return err.message
     }
 }
 
-export async function ShowStatistics(params) {
+export async function ShowStatistics() {
     try{
         const data = await readFileMovies()
         console.log(`number of movi is: ${data.length}`)
         const sumRating = data.reduce((acc,current) => acc + current.rating,0)
-        const averageRating = sumRating/average
+        const averageRating = Number((sumRating/data.length).toFixed(2))
         console.log(`averageRating is: ${averageRating}`)
         const maxRating = data.reduce((acc, current) =>{if (current.rating > acc) return current.rating; return acc},data[0].rating)
         
