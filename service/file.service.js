@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-const fileName = "../data/movies.json"
+const fileName = "./data/movies.json"
 
 export function readFileMovies() {
     return new Promise((resolve,reject) =>{
@@ -19,7 +19,7 @@ export function readFileMovies() {
 
 export function writeFileMovies(content) {
     return new Promise((resolve,reject) =>{
-        fs.writeFile(fileName, JSON.stringify(content), (err) => {
+        fs.writeFile(fileName, JSON.stringify(content,null,2), (err) => {
             if (err) return reject(err)
             resolve()
     })
