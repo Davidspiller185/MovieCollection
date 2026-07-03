@@ -2,20 +2,30 @@ import fs from 'fs'
 
 const fileName = "../data/movies.json"
 
-export function readFileMovies(callback) {
-    fs.readFile(fileName, "utf8", (err, data) => {
-        if (err) return err.message
-        try {
-            callback(JSON.parse(data))
-        } catch (err) {
-            console.log("file content is not a Json")
-        }
-    })
+export function readFileMovies() {
+    return new Promise((resolve,reject) =>{
+        fs.readFile(fileName, "utf8",(err,data) =>{
+            if(err) return reject(err)
+            try{
+                resolve(JSON.parse(data))   
+            }
+            catch(err){
+                reject(err)
+            }
+        })
+    }) 
+    
 }
 
 export function writeFileMovies(content) {
-    fs.writeFile(fileName, JSON.stringify, content, (err) => {
-        if (err) return err.message
-        console.log("succsses")
+    return new Promise((resolve,reject) =>{
+        fs.writeFile(fileName, JSON.stringify(content), (err) => {
+            if (err) return reject(err)
+            resolve()
     })
+})
 }
+
+
+
+
